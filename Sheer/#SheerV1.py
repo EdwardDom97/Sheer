@@ -81,10 +81,47 @@ select_difficulty_text_rect = select_difficulty_text.get_rect(midleft = (50, 525
 easy_difficulty_button = pygame.image.load('graphics/buttons/easydifficultybutton.png')
 easy_difficulty_button_rect = easy_difficulty_button.get_rect(center = (150, 625))
 
-#the following images are going to be used inside of the BATTLE Loop. This could be the most intensive part of the entire code structure so far.
 
+
+
+
+# IMPORTANT the following images are going to be used inside of the BATTLE Loop. This could be the most intensive part of the entire code structure so far.
+
+#Human Base Background
 battle_background_scene = pygame.image.load('graphics/bases/HumanBase/humanbasebackgroundgui.png')
 battle_background_scene_rect = battle_background_scene.get_rect() #unused for now
+
+
+# Hire Unit button
+hire_units_button = pygame.image.load('graphics/buttons/hireunitsbutton.png')
+hire_units_button_rect = hire_units_button.get_rect(topleft=(140, screen_height - 300))
+
+# Build structures button
+build_structures_button = pygame.image.load('graphics/buttons/buildstructuresbutton.png')
+build_structures_button_rect = build_structures_button.get_rect(topleft=(450, screen_height - 300))
+
+
+# Human Unit Window
+human_unit_window = pygame.image.load('graphics/bases/HumanBase/humanunitwindow.png')
+human_unit_window_rect = human_unit_window.get_rect(center = (screen_width // 2, screen_height // 2))
+display_human_unit_window = False
+
+# Human Units
+# Human Farmer costs 5 gold and 5 food, produces 1 gold and 2 food per minute. Adds one to unit count
+human_farmer = pygame.image.load('graphics/bases/HumanBase/units/unitfarmer.png')
+human_farmer_rect = human_farmer.get_rect(center=(screen_width // 2 , screen_height // 2 - 100))
+
+
+# Human Lumberjack costs 5 gold, 5 food, and 5 wood, produces 1 gold and 2 wood per minute. Adds one to unit count
+human_lumberjack = pygame.image.load('graphics/bases/HumanBase/units/unitlumberjack.png')
+human_lumberjack_rect = human_lumberjack.get_rect(center=(screen_width // 2, screen_height // 2))
+
+# Human Warrior costs 10 gold, 5 food and 5 wood, adds + 2 to damage and defense. Adds two to unit count
+human_warrior = pygame.image.load('graphics/bases/HumanBase/units/unitwarrior.png')
+human_warrior_rect = human_warrior.get_rect(center=(screen_width // 2 , screen_height // 2 + 100))
+
+
+
 
 
 # Clock setup to regulate frames and keep track of building/summoning
@@ -128,6 +165,7 @@ while game_running:
 
     # Event handling
     mx, my = pygame.mouse.get_pos()
+
     click = False
 
 
@@ -139,6 +177,12 @@ while game_running:
         
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             click = True
+
+
+        if event.type == MOUSEBUTTONDOWN and event.button == 3:
+            click = False
+            display_human_unit_window = False
+            
 
     
 
@@ -207,6 +251,17 @@ while game_running:
         if menu_button_rect.collidepoint((mx, my)):  
             if click:
                 game_state = "MainMenu"
+
+
+        if hire_units_button_rect.collidepoint((mx, my)):
+            if click:
+                display_human_unit_window = True
+
+                
+
+            
+            
+            
 
 
          # Calculate remaining battle time
@@ -307,6 +362,7 @@ while game_running:
 
 
 
+
     elif game_state == "BATTLE":
 
         #gives the player ample starting resources
@@ -340,7 +396,6 @@ while game_running:
 
 
 
-
         screen.fill((228, 184, 129)) #Golden Wheat color
 
         screen.blit(battle_background_scene, (0, 0))
@@ -355,7 +410,29 @@ while game_running:
         screen.blit(player_wood_display, player_wood_display_rect)
         screen.blit(player_food_display, player_food_display_rect)
 
+        #renders the hire unit and build structure buttons
 
+        screen.blit(hire_units_button,hire_units_button_rect)
+        screen.blit(build_structures_button, build_structures_button_rect)
+
+
+        #displays a red border around the hire units button while the mouse is over it
+        if hire_units_button_rect.collidepoint((mx, my)):
+            pygame.draw.rect(screen, (255,0,0), hire_units_button_rect, 2)
+
+        #displays a red border around the build structures button while the mouse is over it
+        if build_structures_button_rect.collidepoint((mx, my)):
+            pygame.draw.rect(screen, (255,0,0), build_structures_button_rect, 2)
+
+
+        #toggles the human unit window when the "Hire Units" button is hovered over and clicked.
+        if display_human_unit_window:
+            screen.blit(human_unit_window, human_unit_window_rect)
+
+            # Blit the human units
+            screen.blit(human_farmer, human_farmer_rect)
+            screen.blit(human_lumberjack, human_lumberjack_rect)
+            screen.blit(human_warrior, human_warrior_rect)
 
 
 
